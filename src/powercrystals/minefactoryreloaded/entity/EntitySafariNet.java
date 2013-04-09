@@ -1,6 +1,7 @@
 package powercrystals.minefactoryreloaded.entity;
 
 import powercrystals.minefactoryreloaded.item.ItemSafariNet;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.projectile.EntityThrowable;
@@ -66,6 +67,14 @@ public class EntitySafariNet extends EntityThrowable
 			{
 				ItemSafariNet.captureEntity(storedEntity, (EntityLiving)mop.entityHit);
 				dropAsStack(storedEntity);
+			}
+			else if(mop.entityHit instanceof EntityLiving)
+			{
+				Entity releasedEntity = ItemSafariNet.returnReleasedEntity(storedEntity, worldObj, (int)mop.entityHit.posX, (int)mop.entityHit.posY, (int)mop.entityHit.posZ, 1);
+				if(releasedEntity instanceof EntityLiving)
+				{
+					((EntityLiving)releasedEntity).setRevengeTarget((EntityLiving)mop.entityHit);
+				}
 			}
 			else
 			{

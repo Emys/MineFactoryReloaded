@@ -171,6 +171,55 @@ public class ItemSafariNet extends ItemFactory
 		}
 	}
 	
+	public static Entity returnReleasedEntity(ItemStack itemstack, World world, int x, int y, int z, int side)
+	{
+		if(world.isRemote)
+		{
+			return null;
+		}
+		
+		int blockId = world.getBlockId(x, y, z);
+		x += Facing.offsetsXForSide[side];
+		y += Facing.offsetsYForSide[side];
+		z += Facing.offsetsZForSide[side];
+		double spawnOffsetY = 0.0D;
+
+		if (side == 1 && Block.blocksList[blockId] != null && Block.blocksList[blockId].getRenderType() == 11)
+		{
+			spawnOffsetY = 0.5D;
+		}
+		Entity spawnedCreature = spawnCreature(world, itemstack.getTagCompound(), (double)x + 0.5D, (double)y + spawnOffsetY, (double)z + 0.5D);
+		if(itemstack.getItemDamage() != 0)
+		{
+			if(spawnedCreature != null)
+			{
+				if(itemstack.itemID == MineFactoryReloadedCore.safariNetSingleItem.itemID)
+				{
+					itemstack.stackSize--;
+				}
+				else
+				{
+					itemstack.setItemDamage(0);
+				}
+			}
+		}
+		else
+		{ 
+			if(spawnedCreature != null)
+			{
+				if(itemstack.itemID == MineFactoryReloadedCore.safariNetSingleItem.itemID)
+				{
+					itemstack.stackSize--;
+				}
+				else
+				{
+					itemstack.setTagCompound(null);
+				}
+			}
+		}
+		return spawnedCreature;
+	}
+	
 	public static boolean releaseEntity(ItemStack itemstack, World world, int x, int y, int z, int side)
 	{
 		if(world.isRemote)
